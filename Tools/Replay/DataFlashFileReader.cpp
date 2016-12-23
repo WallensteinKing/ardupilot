@@ -6,11 +6,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-DataFlashFileReader::DataFlashFileReader() : fd(-1) {}
-
 bool DataFlashFileReader::open_log(const char *logfile)
 {
-    fd = ::open(logfile, O_RDONLY);
+    fd = ::open(logfile, O_RDONLY|O_CLOEXEC);
     if (fd == -1) {
         return false;
     }
@@ -39,6 +37,11 @@ bool DataFlashFileReader::update(char type[5])
         type[3] = 0;
 
         return handle_log_format_msg(f);
+    }
+
+    if (!done_format_msgs) {
+        done_format_msgs = true;
+        end_format_msgs();
     }
 
     const struct log_Format &f = formats[hdr[2]];

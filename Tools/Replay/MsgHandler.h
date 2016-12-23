@@ -1,7 +1,6 @@
-#ifndef AP_MSGHANDLER_H
-#define AP_MSGHANDLER_H
+#pragma once
 
-#include <DataFlash.h>
+#include <DataFlash/DataFlash.h>
 #include "VehicleType.h"
 
 #include <stdio.h>
@@ -67,7 +66,6 @@ private:
     void init_field_types();
     void add_field_type(char type, size_t size);
     uint8_t size_for_type(char type);
-    void field_not_found(uint8_t *msg, const char *label);
 
 protected:
     struct log_Format f; // the format we are a parser for
@@ -87,6 +85,7 @@ protected:
 			   const char *label_roll,
 			   const char *label_pitch,
 			   const char *label_yaw);
+    [[noreturn]] void field_not_found(uint8_t *msg, const char *label);
 };
 
 template<typename R>
@@ -152,5 +151,3 @@ inline void MsgHandler::field_value_for_type_at_offset(uint8_t *msg,
         exit(1);
     }
 }
-
-#endif
